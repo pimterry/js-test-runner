@@ -1,4 +1,4 @@
-package org.housered.qunitrunner;
+package org.housered.jstestrunner;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

@@ -1,4 +1,4 @@
-qunit-runner
+Js-Test-Runner
 ============
 
-A command-line tool for running QUnit tests
+A command-line tool for running Javascript unit test suites

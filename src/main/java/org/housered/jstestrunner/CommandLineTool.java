@@ -1,4 +1,4 @@
-package org.housered.qunitrunner;
+package org.housered.jstestrunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public class CommandLineTool
 
     private JCommander jCommander;
 
-    @Parameter(description = "List of QUnit test files (.js or .html) to run")
+    @Parameter(description = "List of test suite files to run")
     private List<String> tests = new ArrayList<String>();
 
     @Autowired
@@ -38,7 +38,13 @@ public class CommandLineTool
 
     private void runTest(String test)
     {
-        System.out.println("Test: " + test);
+        System.out.println("Test: " + test);        
+        
+        // Build test inputs
+        // Get test runner
+        // Run tests
+        // Build test output
+        // Write output out
     }
 
 }
