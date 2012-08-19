@@ -6,8 +6,9 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-2.5.xsd">
  
-    <context:component-scan base-package="org.housered.qunitrunner" />
+    <context:component-scan base-package="org.housered.jstestrunner" />
     
     <bean class="com.beust.jcommander.JCommander" />
+    <bean class="com.gargoylesoftware.htmlunit.WebClient" />
  
 </beans>

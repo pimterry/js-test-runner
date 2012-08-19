@@ -5,5 +5,5 @@ import org.housered.jstestrunner.tests.TestResult;
 
 public interface TestRunner
 {
-    public TestResult runTest(TestPage test);
+    public TestResult runTest(TestPage test) throws UnableToRunTestException;
 }

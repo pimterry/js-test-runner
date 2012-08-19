@@ -1,9 +1,13 @@
 package org.housered.jstestrunner.output;
 
+import org.springframework.stereotype.Component;
 
-public interface TestResultOutputterFactory
+@Component
+public class TestResultOutputterFactory
 {
 
-    TestResultOutputter getTestResultOutputter();
+    public TestResultOutputter getTestResultOutputter() {
+        return new NullTestResultOutputter();
+    }
 
 }
