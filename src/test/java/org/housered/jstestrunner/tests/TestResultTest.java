@@ -25,12 +25,14 @@ public class TestResultTest
         String testCaseName = "test-case-name";
         String testClassName = "test-class-name";
         int testDurationMillis = 123;
-        results.add(new TestCaseResult(testClassName, testCaseName, testDurationMillis));
+        boolean testCaseResult = true;
+        results.add(new TestCaseResult(testClassName, testCaseName, testCaseResult, testDurationMillis));
         
         String testCaseName2 = "test-case-name-2";
         String testClassName2 = "test-class-name-2";
         int testDurationMillis2 = 456;
-        results.add(new TestCaseResult(testClassName2, testCaseName2, testDurationMillis2));
+        boolean testCaseResult2 = false;
+        results.add(new TestCaseResult(testClassName2, testCaseName2, testCaseResult2, testDurationMillis2));
         
         TestResult testResult = new TestResult(tests, failures, errors, skipped, name, results);
         
@@ -43,11 +45,13 @@ public class TestResultTest
         TestCaseResult result1 = testResult.getTestResults().get(0);
         assertEquals(testClassName, result1.getTestClass());
         assertEquals(testCaseName, result1.getTestName());
+        assertEquals(testCaseResult, result1.wasSuccess());
         assertEquals(testDurationMillis, result1.getTestDurationMillis());
         
         TestCaseResult result2 = testResult.getTestResults().get(1);
         assertEquals(testClassName2, result2.getTestClass());
         assertEquals(testCaseName2, result2.getTestName());
+        assertEquals(testCaseResult2, result2.wasSuccess());
         assertEquals(testDurationMillis2, result2.getTestDurationMillis());
         
     }

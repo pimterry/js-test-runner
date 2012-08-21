@@ -57,15 +57,17 @@ public class TestResult
     public static class TestCaseResult
     {
 
+        private boolean success;
         private int testDurationMillis;
         private String testClass;
         private String testName;
 
-        public TestCaseResult(String testClass, String testName, int testDurationMillis)
+        public TestCaseResult(String testClass, String testName, boolean success, int testDurationMillis)
         {
             this.testDurationMillis = testDurationMillis;
             this.testClass = testClass;
             this.testName = testName;
+            this.success = success;
         }
 
         public int getTestDurationMillis()
@@ -81,6 +83,11 @@ public class TestResult
         public String getTestName()
         {
             return testName;
+        }
+        
+        public boolean wasSuccess()
+        {
+            return success;
         }
 
     }

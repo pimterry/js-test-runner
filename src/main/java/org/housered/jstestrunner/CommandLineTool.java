@@ -1,5 +1,7 @@
 package org.housered.jstestrunner;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +83,9 @@ public class CommandLineTool
         TestResult result = testRunner.runTest(test);
         
         TestResultOutputter outputter = testOutputterFactory.getTestResultOutputter();
-        outputter.writeTestResultToFile(result, outputFile);
+        
+        FileOutputStream outputStream = new FileOutputStream(new File(outputFile));
+        outputter.writeTestResultToFile(result, outputStream);
     }
 
 }

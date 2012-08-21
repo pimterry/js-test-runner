@@ -7,7 +7,7 @@ public class TestResultOutputterFactory
 {
 
     public TestResultOutputter getTestResultOutputter() {
-        return new NullTestResultOutputter();
+        return new JUnitTestResultOutputter();
     }
 
 }
