@@ -15,7 +15,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.DomNode;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class QUnitTestRunnerTest
@@ -28,7 +28,7 @@ public class QUnitTestRunnerTest
     private HtmlPage resultsPage;
 
     @Mock
-    private DomNode resultsNode;
+    private DomElement resultsElement;
 
     private TestPage testPage;
 
@@ -42,19 +42,19 @@ public class QUnitTestRunnerTest
 
         this.testPage = new SimpleHtmlTestPage("test-page-path");
         when(browser.getPage(testPage.getFileURL())).thenReturn(resultsPage);
-        when(resultsPage.getFirstByXPath(contains("testresult"))).thenReturn(resultsNode);
+        when(resultsPage.getFirstByXPath(contains("testresult"))).thenReturn(resultsElement);
     }
 
     @Test
     public void shouldUnderstandTestSummary() throws Exception {
-        when(resultsNode.asText()).thenReturn("Tests completed in 28 milliseconds.\n3 tests of 5 passed, 2 failed.");
+        when(resultsElement.asText()).thenReturn("Tests completed in 28 milliseconds.\n3 tests of 5 passed, 2 failed.");
         
-        DomNode totalNode = mock(DomNode.class);
-        when(resultsNode.getFirstByXPath(contains("total"))).thenReturn(totalNode);
+        DomElement totalNode = mock(DomElement.class);
+        when(resultsElement.getFirstByXPath(contains("total"))).thenReturn(totalNode);
         when(totalNode.getTextContent()).thenReturn("5");
         
-        DomNode failedNode = mock(DomNode.class);
-        when(resultsNode.getFirstByXPath(contains("failed"))).thenReturn(failedNode);
+        DomElement failedNode = mock(DomElement.class);
+        when(resultsElement.getFirstByXPath(contains("failed"))).thenReturn(failedNode);
         when(failedNode.getTextContent()).thenReturn("2");
         
         TestResult result = testRunner.runTest(testPage);

@@ -7,6 +7,7 @@ import org.housered.jstestrunner.tests.TestResult;
 import org.housered.jstestrunner.tests.TestResult.TestCaseResult;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 public class JUnitTestResultOutputter implements TestResultOutputter
@@ -22,17 +23,23 @@ public class JUnitTestResultOutputter implements TestResultOutputter
         testSuiteRoot.setAttribute("errors", String.valueOf(result.getErrors()));
         testSuiteRoot.setAttribute("failures", String.valueOf(result.getFailures()));
         testSuiteRoot.setAttribute("skip", String.valueOf(result.getSkipped()));
+        testSuiteRoot.setAttribute("time", String.valueOf(result.getTotalTime()));
         
         for (TestCaseResult testCaseResult : result.getTestResults()) {
             Element testCase = new Element("testcase");
             testCase.setAttribute("classname", testCaseResult.getTestClass());
             testCase.setAttribute("name", testCaseResult.getTestName());
             testCase.setAttribute("time", String.valueOf(testCaseResult.getTestDurationMillis()));
+            if (!testCaseResult.wasSuccess()) {
+                // TODO make status an enum
+                testCase.addContent(new Element("failure"));
+            }
+            
             // TODO support individual test case results + messages
             testSuiteRoot.addContent(testCase);
         }
 
-        XMLOutputter xmlOutputter = new XMLOutputter();
+        XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
 
         xmlOutputter.output(testResultDoc, outputStream);
     }

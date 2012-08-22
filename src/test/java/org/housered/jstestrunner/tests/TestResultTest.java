@@ -34,7 +34,7 @@ public class TestResultTest
         boolean testCaseResult2 = false;
         results.add(new TestCaseResult(testClassName2, testCaseName2, testCaseResult2, testDurationMillis2));
         
-        TestResult testResult = new TestResult(tests, failures, errors, skipped, name, results);
+        TestResult testResult = new TestResult(tests, failures, errors, skipped, 1, name, results);
         
         assertEquals(name, testResult.getName());
         assertEquals(tests, testResult.getTests());

@@ -10,16 +10,19 @@ public class TestResult
     private final int failures;
     private final int errors;
     private final int skipped;
+    private final int totalTime;
 
     private final String name;
     private final List<TestCaseResult> testResults;
 
-    public TestResult(int tests, int failures, int errors, int skipped, String name, List<TestCaseResult> testResults)
+    public TestResult(int tests, int failures, int errors, int skipped, int totalTime, String name,
+            List<TestCaseResult> testResults)
     {
         this.tests = tests;
         this.failures = failures;
         this.errors = errors;
         this.skipped = skipped;
+        this.totalTime = totalTime;
         this.name = name;
         this.testResults = Collections.unmodifiableList(testResults);
     }
@@ -42,6 +45,11 @@ public class TestResult
     public int getSkipped()
     {
         return skipped;
+    }
+
+    public int getTotalTime()
+    {
+        return totalTime;
     }
 
     public String getName()
@@ -84,7 +92,7 @@ public class TestResult
         {
             return testName;
         }
-        
+
         public boolean wasSuccess()
         {
             return success;

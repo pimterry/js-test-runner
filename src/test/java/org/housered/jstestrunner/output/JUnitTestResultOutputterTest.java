@@ -47,7 +47,7 @@ public class JUnitTestResultOutputterTest
         testCaseResults.add(testCaseResult1);
         testCaseResults.add(testCaseResult2);
         
-        TestResult result = new TestResult(totalTests, failedTests, errorTests, skippedTests, name, testCaseResults);
+        TestResult result = new TestResult(totalTests, failedTests, errorTests, skippedTests, 1, name, testCaseResults);
         
         outputter.writeTestResultToFile(result, outputStream);
         
