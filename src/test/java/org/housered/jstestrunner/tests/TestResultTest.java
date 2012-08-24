@@ -17,6 +17,7 @@ public class TestResultTest
         int errors = 5;
         int failures = 2;
         int skipped = 1;
+        int totalTime = 321;
         
         String name = "test-name";
         
@@ -34,13 +35,14 @@ public class TestResultTest
         boolean testCaseResult2 = false;
         results.add(new TestCaseResult(testClassName2, testCaseName2, testCaseResult2, testDurationMillis2));
         
-        TestResult testResult = new TestResult(tests, failures, errors, skipped, 1, name, results);
+        TestResult testResult = new TestResult(tests, failures, errors, skipped, totalTime, name, results);
         
         assertEquals(name, testResult.getName());
-        assertEquals(tests, testResult.getTests());
+        assertEquals(tests, testResult.getTotalTestCount());
         assertEquals(errors, testResult.getErrors());
         assertEquals(failures, testResult.getFailures());
         assertEquals(skipped, testResult.getSkipped());
+        assertEquals(totalTime, testResult.getTotalTime());
         
         TestCaseResult result1 = testResult.getTestResults().get(0);
         assertEquals(testClassName, result1.getTestClass());

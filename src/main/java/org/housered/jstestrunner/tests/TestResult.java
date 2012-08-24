@@ -27,7 +27,7 @@ public class TestResult
         this.testResults = Collections.unmodifiableList(testResults);
     }
 
-    public int getTests()
+    public int getTotalTestCount()
     {
         return tests;
     }

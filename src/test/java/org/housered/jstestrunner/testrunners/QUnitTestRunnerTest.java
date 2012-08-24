@@ -47,20 +47,27 @@ public class QUnitTestRunnerTest
 
     @Test
     public void shouldUnderstandTestSummary() throws Exception {
-        when(resultsElement.asText()).thenReturn("Tests completed in 28 milliseconds.\n3 tests of 5 passed, 2 failed.");
+        int testMillisTaken = 28;
+        int totalTests = 5;
+        int failedTests = 2;
+        
+        when(resultsElement.getTextContent()).thenReturn("Tests completed in " + testMillisTaken + 
+                                                         " milliseconds.\n3 tests of 5 passed, 2 failed.");
         
         DomElement totalNode = mock(DomElement.class);
         when(resultsElement.getFirstByXPath(contains("total"))).thenReturn(totalNode);
-        when(totalNode.getTextContent()).thenReturn("5");
+        when(totalNode.getTextContent()).thenReturn(String.valueOf(totalTests));
         
         DomElement failedNode = mock(DomElement.class);
         when(resultsElement.getFirstByXPath(contains("failed"))).thenReturn(failedNode);
-        when(failedNode.getTextContent()).thenReturn("2");
+        when(failedNode.getTextContent()).thenReturn(String.valueOf(failedTests));
         
         TestResult result = testRunner.runTest(testPage);
         
-        assertEquals(5, result.getTests());
-        assertEquals(2, result.getFailures());
+        assertEquals(totalTests, result.getTotalTestCount());
+        assertEquals(failedTests, result.getFailures());
+        assertEquals(0, result.getErrors());
         assertEquals(0, result.getSkipped());
+        assertEquals(testMillisTaken, result.getTotalTime());
     }
 }

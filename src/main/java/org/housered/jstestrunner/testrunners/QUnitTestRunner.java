@@ -2,6 +2,8 @@ package org.housered.jstestrunner.testrunners;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.housered.jstestrunner.tests.TestPage;
 import org.housered.jstestrunner.tests.TestResult;
@@ -31,6 +33,8 @@ public class QUnitTestRunner implements TestRunner
     private static final String TEST_CASE_CLASS_XPATH = ".//*[@class=\"module-name\"]";
     private static final String TEST_CASE_NAME_XPATH = ".//*[@class=\"test-name\"]";
     private static final String TEST_CASE_FAILURE_MESSAGE_XPATH = ".//*[@class=\"test-message\"]";
+    
+    private static final Pattern TOTAL_TEST_TIME_REGEX = Pattern.compile("Tests completed in (\\d+) milliseconds");
 
     @Autowired
     public QUnitTestRunner(WebClient browser)
@@ -88,7 +92,13 @@ public class QUnitTestRunner implements TestRunner
     }
     
     private int getTotalTimeTakenFromResultsNode(DomElement resultsNode) {
-        return 1;
+        Matcher matcher = TOTAL_TEST_TIME_REGEX.matcher(resultsNode.getTextContent());
+        
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group(1));
+        } else {
+            return -1;
+        }
     }
 
     private TestCaseResult getTestCaseResultsFromNode(DomElement testCase)
@@ -130,7 +140,7 @@ public class QUnitTestRunner implements TestRunner
 
     private boolean resultsReady(DomNode resultsNode)
     {
-        return resultsNode.asText().contains("Tests completed");
+        return resultsNode.getTextContent().contains("Tests completed");
     }
 
     private class ElementListenerAndNotifier implements DomChangeListener

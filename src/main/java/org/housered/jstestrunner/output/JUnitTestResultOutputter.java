@@ -19,17 +19,17 @@ public class JUnitTestResultOutputter implements TestResultOutputter
         Document testResultDoc = new Document(testSuiteRoot);
         
         testSuiteRoot.setAttribute("name", result.getName());
-        testSuiteRoot.setAttribute("tests", String.valueOf(result.getTests()));
+        testSuiteRoot.setAttribute("tests", String.valueOf(result.getTotalTestCount()));
         testSuiteRoot.setAttribute("errors", String.valueOf(result.getErrors()));
         testSuiteRoot.setAttribute("failures", String.valueOf(result.getFailures()));
         testSuiteRoot.setAttribute("skip", String.valueOf(result.getSkipped()));
-        testSuiteRoot.setAttribute("time", String.valueOf(result.getTotalTime()));
+        testSuiteRoot.setAttribute("time", String.valueOf(result.getTotalTime() / 1000f));
         
         for (TestCaseResult testCaseResult : result.getTestResults()) {
             Element testCase = new Element("testcase");
             testCase.setAttribute("classname", testCaseResult.getTestClass());
             testCase.setAttribute("name", testCaseResult.getTestName());
-            testCase.setAttribute("time", String.valueOf(testCaseResult.getTestDurationMillis()));
+            testCase.setAttribute("time", String.valueOf(testCaseResult.getTestDurationMillis() / 1000f));
             if (!testCaseResult.wasSuccess()) {
                 // TODO make status an enum
                 testCase.addContent(new Element("failure"));
