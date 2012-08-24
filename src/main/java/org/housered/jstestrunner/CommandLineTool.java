@@ -26,6 +26,9 @@ public class CommandLineTool
 
     @Parameter(description = "List of test suite files to run")
     private List<String> tests = new ArrayList<String>();
+    
+    @Parameter(names = {"-o", "--output"}, description = "Path to output the test results to", required = false)
+    private String outputPath = "./test-results.xml";
 
     private final TestPageFactory testPageFactory;
     private final TestRunnerFactory testRunnerFactory;
@@ -54,7 +57,7 @@ public class CommandLineTool
 
         for (String test : tests)
         {
-            try 
+            try
             {
                 runTest(test);
             }
@@ -74,17 +77,14 @@ public class CommandLineTool
 
     private void runTest(String testName) throws IOException, UnableToRunTestException
     {
-        String outputFile = "output.xml";        
-        
         TestPage test = testPageFactory.getTestPage(testName);
         
-        TestRunner testRunner = testRunnerFactory.getRunnerForTestPage(test);
-        
+        TestRunner testRunner = testRunnerFactory.getRunnerForTestPage(test);        
         TestResult result = testRunner.runTest(test);
         
         TestResultOutputter outputter = testOutputterFactory.getTestResultOutputter();
         
-        FileOutputStream outputStream = new FileOutputStream(new File(outputFile));
+        FileOutputStream outputStream = new FileOutputStream(new File(outputPath));
         outputter.writeTestResultToFile(result, outputStream);
     }
 
