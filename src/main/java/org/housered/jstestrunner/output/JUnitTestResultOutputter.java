@@ -23,13 +23,23 @@ public class JUnitTestResultOutputter implements TestResultOutputter
         testSuiteRoot.setAttribute("errors", String.valueOf(result.getErrors()));
         testSuiteRoot.setAttribute("failures", String.valueOf(result.getFailures()));
         testSuiteRoot.setAttribute("skip", String.valueOf(result.getSkipped()));
-        testSuiteRoot.setAttribute("time", String.valueOf(result.getTotalTime() / 1000f));
+        
+        double totalTime = result.getTotalTime() / 1000d;
+        if (totalTime != -1) {
+            testSuiteRoot.setAttribute("time", String.valueOf(totalTime));
+        }
         
         for (TestCaseResult testCaseResult : result.getTestResults()) {
             Element testCase = new Element("testcase");
             testCase.setAttribute("classname", testCaseResult.getTestClass());
             testCase.setAttribute("name", testCaseResult.getTestName());
-            testCase.setAttribute("time", String.valueOf(testCaseResult.getTestDurationMillis() / 1000f));
+            
+            double testTime = testCaseResult.getTestDurationMillis() / 1000d;
+            
+            if (testTime != -1) {
+                testCase.setAttribute("time", String.valueOf(testCaseResult.getTestDurationMillis() / 1000f));
+            }
+            
             if (!testCaseResult.wasSuccess()) {
                 // TODO make status an enum
                 testCase.addContent(new Element("failure"));

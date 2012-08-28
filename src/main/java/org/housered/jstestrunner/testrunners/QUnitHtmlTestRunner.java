@@ -19,7 +19,7 @@ import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 @Component
-public class QUnitTestRunner implements TestRunner
+public class QUnitHtmlTestRunner implements TestRunner
 {
 
     private WebClient browser;
@@ -37,7 +37,7 @@ public class QUnitTestRunner implements TestRunner
     private static final Pattern TOTAL_TEST_TIME_REGEX = Pattern.compile("Tests completed in (\\d+) milliseconds");
 
     @Autowired
-    public QUnitTestRunner(WebClient browser)
+    public QUnitHtmlTestRunner(WebClient browser)
     {
         this.browser = browser;
     }
@@ -48,7 +48,7 @@ public class QUnitTestRunner implements TestRunner
 
         try
         {
-            page = browser.getPage(test.getFileURL());
+            page = browser.getPage(test.getFilePath());
         }
         catch (Exception e)
         {
@@ -63,15 +63,15 @@ public class QUnitTestRunner implements TestRunner
     @SuppressWarnings("unchecked")
     private TestResult getTestResultFrom(HtmlPage resultsPage)
     {
-        DomElement resultsNode = resultsPage.getFirstByXPath(RESULTS_SUMMARY_XPATH);
+        DomElement results = resultsPage.getFirstByXPath(RESULTS_SUMMARY_XPATH);
 
-        int totalTests = getTotalTestsFromResultsNode(resultsNode);
-        int failedTests = getFailedTestsFromResultsNode(resultsNode);
-        int totalTime = getTotalTimeTakenFromResultsNode(resultsNode);
+        int totalTests = getTotalTestsFromResultsNode(results);
+        int failedTests = getFailedTestsFromResultsNode(results);
+        int totalTime = getTotalTimeTakenFromResultsNode(results);
 
         List<TestCaseResult> testCaseResults = new ArrayList<TestCaseResult>();
 
-        for (DomElement testCaseElement : (List<DomElement>) resultsNode.getByXPath(TEST_CASE_XPATH))
+        for (DomElement testCaseElement : (List<DomElement>) results.getByXPath(TEST_CASE_XPATH))
         {
             testCaseResults.add(getTestCaseResultsFromNode(testCaseElement));
         }
@@ -111,7 +111,7 @@ public class QUnitTestRunner implements TestRunner
         DomElement testNameElement = testCase.getFirstByXPath(TEST_CASE_NAME_XPATH);
         String testName = testNameElement.getTextContent();
         
-        int testDurationMillis = 0; // Not available from QUnit
+        int testDurationMillis = -1; // Not available from QUnit
         
         return new TestCaseResult(testClass, testName, success, testDurationMillis);
     }

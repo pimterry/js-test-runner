@@ -10,7 +10,7 @@ public class SimpleHtmlTestPage implements TestPage
         this.htmlFilePath = htmlFilePath;
     }
 
-    public String getFileURL()
+    public String getFilePath()
     {
         return "file:///" + this.htmlFilePath;
     }

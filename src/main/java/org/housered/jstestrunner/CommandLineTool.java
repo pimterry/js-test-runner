@@ -65,7 +65,7 @@ public class CommandLineTool
             {
                 System.err.println("Failed to run test " + test);
                 System.err.println(e.getMessage());
-            }            
+            }
             catch (IOException e) {
                 System.err.println("Failed to record test results for test " + test);
                 System.err.println(e.getMessage());

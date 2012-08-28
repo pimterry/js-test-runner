@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 public class TestRunnerFactory
 {
     
-    private QUnitTestRunner qunitRunner;
+    private QUnitHtmlTestRunner qunitRunner;
 
     @Autowired
-    public TestRunnerFactory(QUnitTestRunner qunitRunner) {
+    public TestRunnerFactory(QUnitHtmlTestRunner qunitRunner) {
         this.qunitRunner = qunitRunner;
     }
 
