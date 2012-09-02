@@ -147,7 +147,7 @@ public class QUnitHtmlTestRunner implements TestRunner
     {
         private static final long serialVersionUID = 5876321513155410935L;
 
-        public void nodeAdded(DomChangeEvent event)
+        public synchronized void nodeAdded(DomChangeEvent event)
         {
             this.notifyAll();
         }
