@@ -97,7 +97,7 @@ public class QUnitHtmlTestRunner implements TestRunner
         if (matcher.find()) {
             return Integer.parseInt(matcher.group(1));
         } else {
-            return -1;
+            return 0;
         }
     }
 
@@ -111,7 +111,7 @@ public class QUnitHtmlTestRunner implements TestRunner
         DomElement testNameElement = testCase.getFirstByXPath(TEST_CASE_NAME_XPATH);
         String testName = testNameElement.getTextContent();
         
-        int testDurationMillis = -1; // Not available from QUnit
+        int testDurationMillis = 0; // Not available from QUnit
         
         return new TestCaseResult(testClass, testName, success, testDurationMillis);
     }

@@ -25,7 +25,7 @@ public class JUnitTestResultOutputter implements TestResultOutputter
         testSuiteRoot.setAttribute("skip", String.valueOf(result.getSkipped()));
         
         double totalTime = result.getTotalTime() / 1000d;
-        if (totalTime != -1) {
+        if (totalTime > 0) {
             testSuiteRoot.setAttribute("time", String.valueOf(totalTime));
         }
         
@@ -36,7 +36,7 @@ public class JUnitTestResultOutputter implements TestResultOutputter
             
             double testTime = testCaseResult.getTestDurationMillis() / 1000d;
             
-            if (testTime != -1) {
+            if (testTime > 0) {
                 testCase.setAttribute("time", String.valueOf(testCaseResult.getTestDurationMillis() / 1000f));
             }
             
