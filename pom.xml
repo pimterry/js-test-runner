@@ -4,7 +4,7 @@
 
 	<groupId>org.housered</groupId>
 	<artifactId>js-test-runner</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1</version>
 	<packaging>jar</packaging>
 
 	<name>js-test-runner</name>
