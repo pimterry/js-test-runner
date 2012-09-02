@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Js Test Runner : A command-line tool to easily and automatically run your JavaScript test suites" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Js Test Runner</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/pimterry/js-test-runner">View on GitHub</a>
+
+          <h1 id="project_title">Js Test Runner</h1>
+          <h2 id="project_tagline">A command-line tool to easily and automatically run your JavaScript test suites</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/pimterry/js-test-runner/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/pimterry/js-test-runner/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>Js Test Runner</h1>
+
+<p>Js Test Runner is a command-line tool for running JavaScript unit test suites, aiming to make quickly running JavaScript tests as easy as testing is in any other language.</p>
+
+<p>If you have some JavaScript that you want to be tested automatically and headlessly, either locally and in CI, this'll make life lovely. If you have JavaScript that's complex enough to encounter serious browser compatibility issues, if you're trying to test node.js code, or if you just really like managing more test runner scripts than tests (somewhat tongue-in-cheek: there are arguments for this), you might want to look into <a href="http://seleniumhq.org/">Selenium</a>, <a href="http://dailyjs.com/2011/12/08/mocha/">Mocha</a> or <a href="http://phantomjs.org/">PhantomJS</a>, respectively.</p>
+
+<h3>Input support:</h3>
+
+<p>Js-Test-Runner fully supports only <a href="http://qunitjs.com/">QUnit</a> HTML tests currently. This is expected to expand to include <a href="http://pivotal.github.com/jasmine/">Jasmine</a> tests too in the medium/short-term (issue <a href="https://github.com/pimterry/js-test-runner/issues/7">#7</a>).</p>
+
+<h3>Output support:</h3>
+
+<p>Currently Js-Test-Runner supports output in JUnit xml format. This is expected to be extended into a visual command-line runner for manual testing without a browser eventually (see issue <a href="https://github.com/pimterry/js-test-runner/issues/8">#8</a>).</p>
+
+<h3>Installation:</h3>
+
+<p><a href="https://github.com/pimterry/js-test-runner/downloads">Download</a> one of the binary packages for the project and install it. Js-Test-Runner will be added to your path as <code>js-test-runner</code>. If none of the platform-specific binaries is appropriate, the jar-with-dependencies binary can be used directly and run as <code>java -jar js-test-runner-0.1-full.jar [arguments]</code>. </p>
+
+<h3>Usage:</h3>
+
+<p>Usage instructions can be found by running the application without arguments. In practice, to run a test suite you can run <code>js-test-runner test-file.html</code>. Optionally you can also name an output file with <code>-o ./test-results.xml</code>. By default, output will be placed in a file named 'output.xml' in the working directory.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Js Test Runner maintained by <a href="https://github.com/pimterry">pimterry</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
