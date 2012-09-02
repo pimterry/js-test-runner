@@ -34,6 +34,10 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
+
+					<finalName>${project.build.finalName}-full</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
+
 					<archive>
 						<manifest>
 							<mainClass>org.housered.jstestrunner.App</mainClass>
@@ -41,6 +45,14 @@
 						</manifest>
 					</archive>
 				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.vafer</groupId>
@@ -55,7 +67,7 @@
 						<configuration>
 							<dataSet>
 								<data>
-									<src>${project.build.directory}/${project.build.finalName}.jar</src>
+									<src>${project.build.directory}/${project.build.finalName}-full.jar</src>
 									<dst>js-test-runner.jar</dst>
 									<type>file</type>
 									<mapper>
@@ -64,14 +76,14 @@
 									</mapper>
 								</data>
 								<data>
-                                    <src>src/deb/js-test-runner</src>
-                                    <type>file</type>
-                                    <mapper>
-                                        <type>perm</type>
-                                        <prefix>/usr/bin</prefix>
-                                        <filemode>755</filemode>
-                                    </mapper>
-                                </data>
+									<src>src/deb/js-test-runner</src>
+									<type>file</type>
+									<mapper>
+										<type>perm</type>
+										<prefix>/usr/bin</prefix>
+										<filemode>755</filemode>
+									</mapper>
+								</data>
 							</dataSet>
 						</configuration>
 					</execution>

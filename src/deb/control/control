@@ -3,7 +3,7 @@ Version: [[version]]
 Section: misc
 Priority: optional
 Architecture: all
-Depends: jdk (>= 1.5)
+Depends: java6-runtime
 Maintainer: Tim Perry <pimterry@gmail.com>
 Description: JavaScript test runner
 Distribution: development
