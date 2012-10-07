@@ -4,7 +4,7 @@
 
 	<groupId>org.housered</groupId>
 	<artifactId>js-test-runner</artifactId>
-	<version>0.1.1</version>
+	<version>0.1.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>js-test-runner</name>
@@ -144,6 +144,16 @@
 			<groupId>org.jdom</groupId>
 			<artifactId>jdom</artifactId>
 			<version>2.0.2</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>jcl-over-slf4j</artifactId>
+		    <version>1.7.1</version>
+		</dependency>
+		<dependency>
+		  <groupId>ch.qos.logback</groupId>       
+		  <artifactId>logback-classic</artifactId>
+		  <version>1.0.7</version>   
 		</dependency>
 
 		<dependency>
