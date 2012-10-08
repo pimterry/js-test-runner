@@ -55,7 +55,6 @@ public class TestResultTest
         assertEquals(testCaseName2, result2.getTestName());
         assertEquals(testCaseResult2, result2.wasSuccess());
         assertEquals(testDurationMillis2, result2.getTestDurationMillis());
-        
     }
     
 }

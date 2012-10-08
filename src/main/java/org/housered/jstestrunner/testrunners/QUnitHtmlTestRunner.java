@@ -27,6 +27,8 @@ public class QUnitHtmlTestRunner implements TestRunner
     private static final String RESULTS_SUMMARY_XPATH = "//*[@id=\"qunit-testresult\"]";
     private static final String TEST_CASE_XPATH = "//*[starts-with(@id, 'qunit-test-output')]";
     
+    private static final String TEST_SUITE_NAME = "//*[@id=\"qunit-header\"]"; 
+    
     private static final String TOTAL_TEST_COUNT_XPATH = "//*[@class=\"total\"]";
     private static final String FAILED_TEST_COUNT_XPATH = "//*[@class=\"failed\"]";
     
@@ -63,6 +65,8 @@ public class QUnitHtmlTestRunner implements TestRunner
     @SuppressWarnings("unchecked")
     private TestResult getTestResultFrom(HtmlPage resultsPage)
     {
+        String testName = getTestNameFromTestPage(resultsPage);    	
+    	
         DomElement results = resultsPage.getFirstByXPath(RESULTS_SUMMARY_XPATH);
 
         int totalTests = getTotalTestsFromResultsNode(results);
@@ -76,10 +80,15 @@ public class QUnitHtmlTestRunner implements TestRunner
             testCaseResults.add(getTestCaseResultsFromNode(testCaseElement));
         }
 
-        return new TestResult(totalTests, failedTests, 0, 0, totalTime, "QUnit Test Suite", testCaseResults);
+        return new TestResult(totalTests, failedTests, 0, 0, totalTime, testName, testCaseResults);
     }
 
-    private int getTotalTestsFromResultsNode(DomElement resultsNode)
+    private String getTestNameFromTestPage(HtmlPage resultsPage) {
+		DomElement titleElement = resultsPage.getFirstByXPath(TEST_SUITE_NAME);		
+		return titleElement.getTextContent();
+	}
+
+	private int getTotalTestsFromResultsNode(DomElement resultsNode)
     {
         DomElement node = resultsNode.getFirstByXPath(TOTAL_TEST_COUNT_XPATH);
         return Integer.parseInt(node.getTextContent());

@@ -1,12 +1,8 @@
 package org.housered.jstestrunner.testrunners;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.contains;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +12,7 @@ import org.housered.jstestrunner.tests.TestPage;
 import org.housered.jstestrunner.tests.TestResult;
 import org.housered.jstestrunner.tests.TestResult.TestCaseResult;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -33,6 +30,9 @@ public class QUnitHtmlTestRunnerTest
 
     @Mock
     private HtmlPage resultsPage;
+    
+    @Mock
+    private DomElement titleElement;
 
     @Mock
     private DomElement resultsElement;
@@ -49,6 +49,8 @@ public class QUnitHtmlTestRunnerTest
 
         this.testPage = new SimpleHtmlTestPage("test-page-path");
         when(browser.getPage(testPage.getFilePath())).thenReturn(resultsPage);
+
+        when(resultsPage.getFirstByXPath(contains("qunit-header"))).thenReturn(titleElement);
         when(resultsPage.getFirstByXPath(contains("testresult"))).thenReturn(resultsElement);
     }
 
@@ -58,6 +60,9 @@ public class QUnitHtmlTestRunnerTest
         int testMillisTaken = 28;
         int totalTests = 3;
         int failedTests = 1;
+        String testTitle = "Test Title";
+        
+        when(titleElement.getTextContent()).thenReturn(testTitle);
 
         when(resultsElement.getTextContent()).thenReturn(
                 "Tests completed in " + testMillisTaken + " milliseconds.\n2 tests of 3 passed, 1 failed.");
@@ -71,11 +76,13 @@ public class QUnitHtmlTestRunnerTest
         when(failedNode.getTextContent()).thenReturn(String.valueOf(failedTests));
 
         List<DomElement> testCases = Arrays.asList(mockTestCaseElement("testClass", "test1", true),
-                mockTestCaseElement("testClass", "test2", false), mockTestCaseElement("testClass2", "test3", true));
+                								   mockTestCaseElement("testClass", "test2", false),
+                								   mockTestCaseElement("testClass2", "test3", true));
         doReturn(testCases).when(resultsElement).getByXPath(contains("qunit-test-output"));
 
         TestResult testResult = testRunner.runTest(testPage);
 
+        assertEquals(testTitle, testResult.getName());
         assertEquals(totalTests, testResult.getTotalTestCount());
         assertEquals(failedTests, testResult.getFailures());
         assertEquals(0, testResult.getErrors());
