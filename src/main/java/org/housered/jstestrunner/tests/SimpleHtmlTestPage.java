@@ -1,18 +1,21 @@
 package org.housered.jstestrunner.tests;
 
+import java.io.File;
+import java.io.IOException;
+
 public class SimpleHtmlTestPage implements TestPage
 {
 
-    private String htmlFilePath;
+    private File htmlFile;
 
-    public SimpleHtmlTestPage(String htmlFilePath)
+    public SimpleHtmlTestPage(String htmlFilePath) throws IOException
     {
-        this.htmlFilePath = htmlFilePath;
+    	this.htmlFile = new File(new File(htmlFilePath).getCanonicalPath());    	
     }
 
     public String getFilePath()
     {
-        return "file:///" + this.htmlFilePath;
+        return this.htmlFile.toURI().toString();
     }
 
 }
