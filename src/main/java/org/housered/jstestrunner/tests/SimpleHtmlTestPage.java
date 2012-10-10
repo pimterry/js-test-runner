@@ -2,20 +2,32 @@ package org.housered.jstestrunner.tests;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class SimpleHtmlTestPage implements TestPage
 {
 
-    private File htmlFile;
+    private URI testPageAddress;
 
     public SimpleHtmlTestPage(String htmlFilePath) throws IOException
     {
-    	this.htmlFile = new File(new File(htmlFilePath).getCanonicalPath());    	
+    	String absolutePath = new File(htmlFilePath).getCanonicalPath();
+    	
+    	if (!absolutePath.startsWith("/")) {
+    		absolutePath = "/" + absolutePath;
+    	}
+	
+		try {
+			testPageAddress = new URI("file", "", absolutePath.replace("\\", "/"), null);
+		} catch (URISyntaxException e) {
+			throw new IllegalArgumentException("Failed to build URI for test file", e); 
+		}
     }
 
     public String getFilePath()
     {
-        return this.htmlFile.toURI().toString();
+		return testPageAddress.toASCIIString();
     }
 
 }

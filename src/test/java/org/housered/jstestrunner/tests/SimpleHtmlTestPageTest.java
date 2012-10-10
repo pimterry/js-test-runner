@@ -9,18 +9,18 @@ import org.junit.Test;
 
 public class SimpleHtmlTestPageTest {
 	
-	private static final String ROOT = getRootPath();
-	private static final String CURRENT_DIRECTORY = getCurrentPath();
+	private static final String ROOT = withLeadingSlash(getRootPath());
+	private static final String CURRENT_DIRECTORY = withLeadingSlash(getCurrentPath());
 	
 	private static String getRootPath() {
 		String currentPath = getCurrentPath();
 		
 		for (File root : File.listRoots()) {
 			if (currentPath.startsWith(root.getAbsolutePath())) {
-				return root.getAbsolutePath();
+				return root.getAbsolutePath().replace("\\", "/");
 			}
 		}
-		return null;
+		throw new IllegalStateException("Cannot derive path to filesystem root");
 	}
 	
 	private static String getCurrentPath() {
@@ -30,21 +30,50 @@ public class SimpleHtmlTestPageTest {
 			throw new IllegalStateException("Unable to get current directory for SimpleHtmlTestPage path tests");
 		}		
 	}
+	
+	private static String withLeadingSlash(String input) {
+		if (input.startsWith("/")) {
+			return input;
+		} else {
+			return "/" + input;
+		}
+	}
 
 	@Test
 	public void shouldProvidePathToTestFile() throws IOException {
-		String actualFilePath = new File(ROOT, "test\\file\\path.html").getAbsolutePath();
+		String actualFilePath = ROOT + "test/file/path.html";
 		
 		SimpleHtmlTestPage testPage = new SimpleHtmlTestPage(actualFilePath);
 		String filePath = testPage.getFilePath();
 		
-		assertEquals("file:/" + actualFilePath.replace("\\", "/"), filePath);
+		assertEquals("file://" + actualFilePath.replace("\\", "/"), filePath);
 	}
 	
 	@Test
-	public void shouldProvideAbsolutePathToTestFileInWorkingDirectory() throws IOException {		
-		String relativePath = "./testFile.html";
-		String expectedAbsolutePath = "file:/" + CURRENT_DIRECTORY.replace("\\", "/") + "/testFile.html";
+	public void shouldProvidePathToTestFileWithBackwardSlashes() throws IOException {
+		String actualFilePath = ROOT + "test\\file\\path.html";
+		
+		SimpleHtmlTestPage testPage = new SimpleHtmlTestPage(actualFilePath);
+		String filePath = testPage.getFilePath();
+		
+		assertEquals("file://" + actualFilePath.replace("\\", "/"), filePath);
+	}
+	
+	@Test
+	public void shouldEscapeSpecialCharactersInPathIfNecessary() throws IOException {
+		String actualFilePath = ROOT + "test/file/path to file.html";
+		
+		SimpleHtmlTestPage testPage = new SimpleHtmlTestPage(actualFilePath);
+		String filePath = testPage.getFilePath();
+		
+		assertEquals("file://" + actualFilePath.replace(" ", "%20").replace("\\", "/"), filePath);
+	}		
+	
+	@Test
+	public void shouldProvideAbsolutePathToTestFileInWorkingDirectory() throws IOException {
+		String expectedAbsolutePath = "file://" + CURRENT_DIRECTORY.replace("\\", "/") + "/testFile.html";
+		
+		String relativePath = "./testFile.html";		
 		
 		SimpleHtmlTestPage testPage = new SimpleHtmlTestPage(relativePath);
 		
@@ -53,10 +82,10 @@ public class SimpleHtmlTestPageTest {
 	
 	@Test
 	public void shouldProvideAbsolutePathToTestFileInSiblingDirectory() throws IOException {		
-		String relativePath = "../sibling/testFile.html";
+		String parentDirectory = withLeadingSlash(new File(CURRENT_DIRECTORY).getParent());
+		String expectedAbsolutePath = "file://" + parentDirectory.replace("\\", "/") + "/sibling/testFile.html";
 		
-		String parentDirectory = new File(CURRENT_DIRECTORY).getParent();
-		String expectedAbsolutePath = "file:/" + parentDirectory.replace("\\", "/") + "/sibling/testFile.html";
+		String relativePath = "../sibling/testFile.html";		
 		
 		SimpleHtmlTestPage testPage = new SimpleHtmlTestPage(relativePath);
 		
@@ -64,11 +93,11 @@ public class SimpleHtmlTestPageTest {
 	}
 	
 	@Test
-	public void shouldProvideAbsolutePathToTestFileInParentDirectory() throws IOException {		
-		String relativePath = "../testFile.html";
+	public void shouldProvideAbsolutePathToTestFileInParentDirectory() throws IOException {				
+		String parentDirectory = withLeadingSlash(new File(CURRENT_DIRECTORY).getParent());
+		String expectedAbsolutePath = "file://" + parentDirectory.replace("\\", "/") + "/testFile.html";
 		
-		String parentDirectory = new File(CURRENT_DIRECTORY).getParent();
-		String expectedAbsolutePath = "file:/" + parentDirectory.replace("\\", "/") + "/testFile.html";
+		String relativePath = "../testFile.html";		
 		
 		SimpleHtmlTestPage testPage = new SimpleHtmlTestPage(relativePath);
 		
