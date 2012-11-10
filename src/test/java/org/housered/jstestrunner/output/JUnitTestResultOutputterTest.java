@@ -23,15 +23,14 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class JUnitTestResultOutputterTest
 {
 
-    private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-    @InjectMocks
+    private ByteArrayOutputStream outputStream;
     private JUnitTestResultOutputter outputter;
 
     @Before
     public void setup()
     {
-        MockitoAnnotations.initMocks(this);
+        outputStream = new ByteArrayOutputStream();
+        outputter = new JUnitTestResultOutputter(outputStream);
     }
 
     @Test
@@ -46,7 +45,7 @@ public class JUnitTestResultOutputterTest
 
         TestResult result = new TestResult(10, 5, 2, 1, 5000, "test suite", testCaseResults);
 
-        outputter.writeTestResultToFile(result, outputStream);
+        outputter.writeTestResultToFile(result);
         InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 
         Element testSuiteNode = new SAXBuilder().build(inputStream).getRootElement();

@@ -8,6 +8,6 @@ import org.housered.jstestrunner.tests.TestResult;
 public interface TestResultOutputter
 {
 
-    void writeTestResultToFile(TestResult result, OutputStream outputStream) throws IOException;
+    void writeTestResultToFile(TestResult result) throws IOException;
     
 }

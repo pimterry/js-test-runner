@@ -1,7 +1,5 @@
 package org.housered.jstestrunner;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +12,8 @@ import org.housered.jstestrunner.testrunners.UnableToRunTestException;
 import org.housered.jstestrunner.tests.TestPage;
 import org.housered.jstestrunner.tests.TestPageFactory;
 import org.housered.jstestrunner.tests.TestResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +23,8 @@ import com.beust.jcommander.Parameter;
 @Component
 public class CommandLineTool
 {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(CommandLineTool.class);
 
     @Parameter(description = "List of test suite files to run")
     private List<String> tests = new ArrayList<String>();
@@ -49,43 +51,51 @@ public class CommandLineTool
     {
         jCommander.parse(args);
         
-        if (tests.size() == 0) {
-            System.out.println("No tests specified!");
+        if (tests.isEmpty()) {
+        	LOG.error("No tests specified");
             jCommander.usage();
             return;
+        }
+        
+        LOG.info("Test run starting");
+        
+        TestResultOutputter testOutputter = null;
+        try {
+        	testOutputter = testOutputterFactory.getTestResultOutputter(outputPath);
+        } 
+        catch (IOException e) 
+        {
+        	LOG.error("Unable to initialise test outputter", e);
+        	return;
         }
 
         for (String test : tests)
         {
             try
             {
-                runTest(test);
+                runTest(test, testOutputter);
             }
             catch (UnableToRunTestException e)
             {
-                System.err.println("Failed to run test " + test);
-                System.err.println(e.getMessage());
+                LOG.error("Failed to run test {}", test, e);
             }
-            catch (IOException e) {
-                System.err.println("Failed to record test results for test " + test);
-                System.err.println(e.getMessage());
+            catch (IOException e) 
+            {
+            	LOG.error("Failed to record test results for test {}", test, e);
             }
         }
 
-        System.out.println("Done");
-    }
+        LOG.info("Test run completed");
+	}
 
-    private void runTest(String testName) throws IOException, UnableToRunTestException
-    {
-        TestPage test = testPageFactory.getTestPage(testName);
-        
-        TestRunner testRunner = testRunnerFactory.getRunnerForTestPage(test);        
-        TestResult result = testRunner.runTest(test);
-        
-        TestResultOutputter outputter = testOutputterFactory.getTestResultOutputter();
-        
-        FileOutputStream outputStream = new FileOutputStream(new File(outputPath));
-        outputter.writeTestResultToFile(result, outputStream);
-    }
+	private void runTest(String testName, TestResultOutputter testOutputter)
+			throws IOException, UnableToRunTestException {
+		TestPage test = testPageFactory.getTestPage(testName);
+
+		TestRunner testRunner = testRunnerFactory.getRunnerForTestPage(test);
+		TestResult result = testRunner.runTest(test);
+
+		testOutputter.writeTestResultToFile(result);
+	}
 
 }

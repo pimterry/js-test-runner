@@ -12,7 +12,7 @@ import org.housered.jstestrunner.tests.TestResult;
 public class NullTestResultOutputter implements TestResultOutputter
 {
 
-    public void writeTestResultToFile(TestResult result, OutputStream outputStream) throws IOException
+    public void writeTestResultToFile(TestResult result) throws IOException
     {
         return;
     }

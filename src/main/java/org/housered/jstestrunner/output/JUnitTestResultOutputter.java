@@ -12,8 +12,14 @@ import org.jdom2.output.XMLOutputter;
 
 public class JUnitTestResultOutputter implements TestResultOutputter
 {
+	
+	private OutputStream outputStream;
 
-    public void writeTestResultToFile(TestResult result, OutputStream outputStream) throws IOException
+	public JUnitTestResultOutputter(OutputStream outputStream) {
+		this.outputStream = outputStream;
+	}
+
+    public void writeTestResultToFile(TestResult result) throws IOException
     {
         Element testSuiteRoot = new Element("testsuite");
         Document testResultDoc = new Document(testSuiteRoot);
