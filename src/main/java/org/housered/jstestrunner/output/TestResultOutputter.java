@@ -9,5 +9,7 @@ public interface TestResultOutputter
 {
 
     void writeTestResultToFile(TestResult result) throws IOException;
+
+	void finishTestOutput() throws IOException;
     
 }

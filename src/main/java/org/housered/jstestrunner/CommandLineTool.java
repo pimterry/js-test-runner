@@ -21,75 +21,70 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
 @Component
-public class CommandLineTool
-{
-	
+public class CommandLineTool {
+
 	private static final Logger LOG = LoggerFactory.getLogger(CommandLineTool.class);
 
-    @Parameter(description = "List of test suite files to run")
-    private List<String> tests = new ArrayList<String>();
-    
-    @Parameter(names = {"-o", "--output"}, description = "Path to output the test results to", required = false)
-    private String outputPath = "./test-results.xml";
+	@Parameter(description = "List of test suite files to run")
+	private List<String> tests = new ArrayList<String>();
 
-    private final TestPageFactory testPageFactory;
-    private final TestRunnerFactory testRunnerFactory;
-    private final TestResultOutputterFactory testOutputterFactory;
-    private final JCommander jCommander;
+	@Parameter(names = { "-o", "--output" }, description = "Path to output the test results to", required = false)
+	private String outputPath = "./test-results.xml";
 
-    @Autowired
-    public CommandLineTool(JCommander jCommander, TestPageFactory testPageFactory, TestRunnerFactory testRunnerFactory, TestResultOutputterFactory testOutputterFactory)
-    {
-        jCommander.addObject(this);
-        this.jCommander = jCommander;
-        this.testPageFactory = testPageFactory;
-        this.testRunnerFactory = testRunnerFactory;
-        this.testOutputterFactory = testOutputterFactory;
-    }
+	private final TestPageFactory testPageFactory;
+	private final TestRunnerFactory testRunnerFactory;
+	private final TestResultOutputterFactory testOutputterFactory;
+	private final JCommander jCommander;
 
-    public void run(String[] args)
-    {
-        jCommander.parse(args);
-        
-        if (tests.isEmpty()) {
-        	LOG.error("No tests specified");
-            jCommander.usage();
-            return;
-        }
-        
-        LOG.info("Test run starting");
-        
-        TestResultOutputter testOutputter = null;
-        try {
-        	testOutputter = testOutputterFactory.getTestResultOutputter(outputPath);
-        } 
-        catch (IOException e) 
-        {
-        	LOG.error("Unable to initialise test outputter", e);
-        	return;
-        }
+	@Autowired
+	public CommandLineTool(JCommander jCommander, TestPageFactory testPageFactory, TestRunnerFactory testRunnerFactory, TestResultOutputterFactory testOutputterFactory) {
+		this.jCommander = jCommander;
+		this.testPageFactory = testPageFactory;
+		this.testRunnerFactory = testRunnerFactory;
+		this.testOutputterFactory = testOutputterFactory;
 
-        for (String test : tests)
-        {
-            try
-            {
-                runTest(test, testOutputter);
-            }
-            catch (UnableToRunTestException e)
-            {
-                LOG.error("Failed to run test {}", test, e);
-            }
-            catch (IOException e) 
-            {
-            	LOG.error("Failed to record test results for test {}", test, e);
-            }
-        }
-
-        LOG.info("Test run completed");
+		jCommander.addObject(this);
 	}
 
-	private void runTest(String testName, TestResultOutputter testOutputter)
-			throws IOException, UnableToRunTestException {
+	public void run(String[] args) {
+		jCommander.parse(args);
+
+		if (tests.isEmpty()) {
+			LOG.error("No tests specified");
+			jCommander.usage();
+			return;
+		}
+
+		LOG.info("Test run starting");
+
+		TestResultOutputter testOutputter = null;
+		try {
+			testOutputter = testOutputterFactory.getTestResultOutputter(outputPath);
+		} catch (IOException e) {
+			LOG.error("Unable to initialise test outputter", e);
+			return;
+		}
+
+		for (String test : tests) {
+			try {
+				runTest(test, testOutputter);
+			} catch (UnableToRunTestException e) {
+				LOG.error("Failed to run test {}", test, e);
+			} catch (IOException e) {
+				LOG.error("Failed to record test results for test {}", test, e);
+			}
+		}
+		
+		try {
+			testOutputter.finishTestOutput();
+		} catch (IOException e) {
+			LOG.error("Unable to finish test output", e);
+			return;
+		}
+		LOG.info("Test run completed");
+	}
+
+	private void runTest(String testName, TestResultOutputter testOutputter) throws IOException, UnableToRunTestException {
 		TestPage test = testPageFactory.getTestPage(testName);
 
 		TestRunner testRunner = testRunnerFactory.getRunnerForTestPage(test);

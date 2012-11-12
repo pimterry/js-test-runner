@@ -4,13 +4,17 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.housered.jstestrunner.tests.TestResult;
 import org.housered.jstestrunner.tests.TestResult.TestCaseResult;
+import org.jdom2.DataConversionException;
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,49 +31,72 @@ public class JUnitTestResultOutputterTest
     private JUnitTestResultOutputter outputter;
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         outputStream = new ByteArrayOutputStream();
         outputter = new JUnitTestResultOutputter(outputStream);
     }
 
     @Test
-    public void shouldWriteBasicOutputAsValidXML() throws Exception
-    {
-        TestCaseResult testCaseResult1 = new TestCaseResult("testClass", "testName", true, 123);
-        TestCaseResult testCaseResult2 = new TestCaseResult("testClass2", "testName2", false, 456);
-
+    public void shouldWriteOutputOfTestResult() throws Exception {
         List<TestCaseResult> testCaseResults = new ArrayList<TestCaseResult>();
-        testCaseResults.add(testCaseResult1);
-        testCaseResults.add(testCaseResult2);
+        testCaseResults.add(new TestCaseResult("testClass", "testName", true, 123));
+        testCaseResults.add(new TestCaseResult("testClass2", "testName2", false, 456));
 
         TestResult result = new TestResult(10, 5, 2, 1, 5000, "test suite", testCaseResults);
 
         outputter.writeTestResultToFile(result);
-        InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+        outputter.finishTestOutput();
+        
+        Element testSuiteElement = getElementFromOutput();        
+        List<Element> testCaseElements = testSuiteElement.getChildren();
+        
+        assertSuiteElementMatches(result, testSuiteElement);
 
-        Element testSuiteNode = new SAXBuilder().build(inputStream).getRootElement();
+        for (int ii = 0; ii < testCaseElements.size(); ii++) {
+        	assertCaseElementMatches(result.getTestResults().get(ii), testCaseElements.get(ii));
+        }
+    }
+    
+    @Test
+    public void shouldWriteOutputOfMultipleTests() throws Exception {
+        TestResult result2 = new TestResult(14, 2, 4, 6, 3000, "tests", new ArrayList<TestCaseResult>());
+        TestResult result1 = new TestResult(7, 1, 2, 3, 3000, "tests2", new ArrayList<TestCaseResult>());
+        
+        List<TestResult> results = Arrays.asList(result1, result2);
+        
+        for (TestResult result : results) {
+        	outputter.writeTestResultToFile(result);
+        }
+        outputter.finishTestOutput();
+        
+        Element testSuitesElement = getElementFromOutput();
 
-        assertEquals(result.getName(), testSuiteNode.getAttribute("name").getValue());
-        assertEquals(result.getTotalTestCount(), testSuiteNode.getAttribute("tests").getIntValue());
-        assertEquals(result.getErrors(), testSuiteNode.getAttribute("errors").getIntValue());
-        assertEquals(result.getFailures(), testSuiteNode.getAttribute("failures").getIntValue());
-        assertEquals(result.getSkipped(), testSuiteNode.getAttribute("skip").getIntValue());
-        assertEquals(result.getTotalTime(), testSuiteNode.getAttribute("time").getFloatValue() * 1000, 0.1);
-
-        List<Element> testCaseNodes = testSuiteNode.getChildren();
-
-        assertEquals(2, testCaseNodes.size());
-
-        Element testCaseNode1 = testCaseNodes.get(0);
-        assertEquals(testCaseResult1.getTestClass(), testCaseNode1.getAttribute("classname").getValue());
-        assertEquals(testCaseResult1.getTestName(), testCaseNode1.getAttribute("name").getValue());
-        assertEquals(testCaseResult1.getTestDurationMillis(), testCaseNode1.getAttribute("time").getFloatValue() * 1000, 0.1);
-
-        Element testCaseNode2 = testCaseNodes.get(1);
-        assertEquals(testCaseResult2.getTestClass(), testCaseNode2.getAttribute("classname").getValue());
-        assertEquals(testCaseResult2.getTestName(), testCaseNode2.getAttribute("name").getValue());
-        assertEquals(testCaseResult2.getTestDurationMillis(), testCaseNode2.getAttribute("time").getFloatValue() * 1000, 0.1);
+        for (int ii = 0; ii < testSuitesElement.getChildren().size(); ii++) {
+        	Element testSuite = testSuitesElement.getChildren().get(ii);
+        	TestResult result = results.get(ii);
+        	
+        	assertSuiteElementMatches(result, testSuite);
+        }
+    }
+    
+    public Element getElementFromOutput() throws JDOMException, IOException {
+    	InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+        return new SAXBuilder().build(inputStream).getRootElement();
+    }
+    
+    public void assertSuiteElementMatches(TestResult result, Element element) throws DataConversionException {
+        assertEquals(result.getName(), element.getAttribute("name").getValue());
+        assertEquals(result.getTotalTestCount(), element.getAttribute("tests").getIntValue());
+        assertEquals(result.getErrors(), element.getAttribute("errors").getIntValue());
+        assertEquals(result.getFailures(), element.getAttribute("failures").getIntValue());
+        assertEquals(result.getSkipped(), element.getAttribute("skip").getIntValue());
+        assertEquals(result.getTotalTime(), element.getAttribute("time").getFloatValue() * 1000, 0.1);
+    }
+    
+    public void assertCaseElementMatches(TestCaseResult result, Element element) throws DataConversionException {
+        assertEquals(result.getTestClass(), element.getAttribute("classname").getValue());
+        assertEquals(result.getTestName(), element.getAttribute("name").getValue());
+        assertEquals(result.getTestDurationMillis(), element.getAttribute("time").getFloatValue() * 1000, 0.1);
     }
 
 }
