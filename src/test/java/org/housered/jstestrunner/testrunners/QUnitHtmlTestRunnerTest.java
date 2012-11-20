@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,7 +13,6 @@ import org.housered.jstestrunner.tests.TestPage;
 import org.housered.jstestrunner.tests.TestResult;
 import org.housered.jstestrunner.tests.TestResult.TestCaseResult;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -47,8 +47,8 @@ public class QUnitHtmlTestRunnerTest
     {
         MockitoAnnotations.initMocks(this);
 
-        this.testPage = new SimpleHtmlTestPage("test-page-path");
-        when(browser.getPage(testPage.getFilePath())).thenReturn(resultsPage);
+        this.testPage = new SimpleHtmlTestPage(new File("test-page-path"));
+        when(browser.getPage(testPage.getFileURL())).thenReturn(resultsPage);
 
         when(resultsPage.getFirstByXPath(contains("qunit-header"))).thenReturn(titleElement);
         when(resultsPage.getFirstByXPath(contains("testresult"))).thenReturn(resultsElement);

@@ -5,29 +5,37 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class SimpleHtmlTestPage implements TestPage
-{
+public class SimpleHtmlTestPage implements TestPage {
 
-    private URI testPageAddress;
+    private String testPageUrl;
+    private File htmlFile;
 
-    public SimpleHtmlTestPage(String htmlFilePath) throws IOException
-    {
-    	String absolutePath = new File(htmlFilePath).getCanonicalPath();
-    	
-    	if (!absolutePath.startsWith("/")) {
-    		absolutePath = "/" + absolutePath;
-    	}
-	
-		try {
-			testPageAddress = new URI("file", "", absolutePath.replace("\\", "/"), null);
-		} catch (URISyntaxException e) {
-			throw new IllegalArgumentException("Failed to build URI for test file", e); 
-		}
+    public SimpleHtmlTestPage(File htmlFile) throws IOException {
+        this.htmlFile = htmlFile;
+        this.testPageUrl = buildFileURL(htmlFile);
+    }
+    
+    private String buildFileURL(File file) throws IOException {
+        String absolutePath = file.getCanonicalPath();
+
+        if (!absolutePath.startsWith("/")) {
+            absolutePath = "/" + absolutePath;
+        }
+
+        try {
+            URI uri = new URI("file", "", absolutePath.replace("\\", "/"), null);
+            return uri.toASCIIString();
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException("Failed to build URI for test file", e);
+        }
+    }
+    
+    public String getFilePath() {
+        return htmlFile.getPath();
     }
 
-    public String getFilePath()
-    {
-		return testPageAddress.toASCIIString();
+    public String getFileURL() {
+        return testPageUrl;
     }
 
 }

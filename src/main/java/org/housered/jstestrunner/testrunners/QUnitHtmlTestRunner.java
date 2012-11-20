@@ -50,7 +50,7 @@ public class QUnitHtmlTestRunner implements TestRunner
 
         try
         {
-            page = browser.getPage(test.getFilePath());
+            page = browser.getPage(test.getFileURL());
         }
         catch (Exception e)
         {

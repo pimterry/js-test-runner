@@ -25,7 +25,7 @@ public class CommandLineTool {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommandLineTool.class);
 
-	@Parameter(description = "List of test suite files to run")
+	@Parameter(description = "List of test suite files or folders to run")
 	private List<String> tests = new ArrayList<String>();
 
 	@Parameter(names = { "-o", "--output" }, description = "Path to output the test results to", required = false)
@@ -85,12 +85,14 @@ public class CommandLineTool {
 	}
 
 	private void runTest(String testName, TestResultOutputter testOutputter) throws IOException, UnableToRunTestException {
-		TestPage test = testPageFactory.getTestPage(testName);
-
-		TestRunner testRunner = testRunnerFactory.getRunnerForTestPage(test);
-		TestResult result = testRunner.runTest(test);
-
-		testOutputter.writeTestResultToFile(result);
+		List<TestPage> testPages = testPageFactory.getTestPages(testName);
+		
+		for (TestPage test : testPages) {
+			TestRunner testRunner = testRunnerFactory.getRunnerForTestPage(test);
+			TestResult result = testRunner.runTest(test);
+	
+			testOutputter.writeTestResultToFile(result);
+		}
 	}
 
 }
