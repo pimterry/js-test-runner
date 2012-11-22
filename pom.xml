@@ -77,7 +77,7 @@
 									</mapper>
 								</data>
 								<data>
-									<src>src/deb/js-test-runner</src>
+									<src>src/package/js-test-runner</src>
 									<type>file</type>
 									<mapper>
 										<type>perm</type>
@@ -90,6 +90,43 @@
 					</execution>
 				</executions>
 			</plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <version>2.1-alpha-2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>rpm</goal>
+                        </goals>     
+                    </execution>            
+                </executions>
+                <configuration>
+                    <copyright>Tim Perry 2012</copyright>
+                    <group>Development</group>
+                    <description>JS-Test-Runner: A command-line runner for JavaScript testing</description>
+                    <mappings>
+                        <mapping>
+                            <directory>/usr/share/java</directory>
+                            <sources>
+                                <source>
+                                    <location>target/${project.build.finalName}-full.jar</location>
+                                </source>
+                            </sources>
+                        </mapping>                           
+                        <mapping>
+                            <directory>/usr/bin</directory>
+                            <filemode>755</filemode>
+                            <sources>
+                                <source>
+                                    <location>src/package/js-test-runner</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                    </mappings>
+                </configuration>   
+            </plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
