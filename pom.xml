@@ -69,7 +69,7 @@
 							<dataSet>
 								<data>
 									<src>${project.build.directory}/${project.build.finalName}-full.jar</src>
-									<dst>js-test-runner.jar</dst>
+									<dst>${project.name}.jar</dst>
 									<type>file</type>
 									<mapper>
 										<type>perm</type>
@@ -112,6 +112,7 @@
                             <sources>
                                 <source>
                                     <location>target/${project.build.finalName}-full.jar</location>
+                                    <destination>${project.name}.jar</destination>
                                 </source>
                             </sources>
                         </mapping>                           
@@ -234,6 +235,6 @@
             <artifactId>spring-test</artifactId>
             <version>3.1.0.RELEASE</version>
             <scope>test</scope>
-		</dependency>		
+		</dependency>
 	</dependencies>
 </project>
