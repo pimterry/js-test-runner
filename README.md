@@ -23,9 +23,10 @@ eventually (see issue [#8](https://github.com/pimterry/js-test-runner/issues/8))
 Installation:
 -------------
 
-[Download](https://github.com/pimterry/js-test-runner/downloads) one of the binary packages for the project and install it. Js-Test-Runner will be added to your 
-path as `js-test-runner`. If none of the platform-specific binaries is appropriate, the jar-with-dependencies binary can be used directly and run as 
-`java -jar js-test-runner-0.1-full.jar [arguments]`. 
+[Download](https://github.com/pimterry/js-test-runner/downloads) one of the binary packages for the project and install it. JS-Test-Runner is currently available in RPM format for
+Redhat-based linux systems, and DEB for Debian-based linux systems. After installation, the runner will be added to your path as `js-test-runner`. 
+
+If none of the platform-specific binaries is appropriate, the jar-with-dependencies binary can be downloaded and used directly by running `java -jar js-test-runner-0.2-full.jar [arguments]`. 
 
 Usage:
 ------
