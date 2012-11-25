@@ -1,9 +1,9 @@
 package org.housered.jstestrunner.testrunners;
 
 import org.housered.jstestrunner.tests.TestPage;
-import org.housered.jstestrunner.tests.TestResult;
+import org.housered.jstestrunner.tests.TestSuiteResult;
 
 public interface TestRunner
 {
-    public TestResult runTest(TestPage test) throws UnableToRunTestException;
+    public TestSuiteResult runTest(TestPage test) throws UnableToRunTestException;
 }

@@ -1,6 +1,6 @@
 package org.housered.jstestrunner.testrunners;
 
-import static org.housered.jstestrunner.tests.TestResultBuilder.*;
+import static org.housered.jstestrunner.tests.TestSuiteResultBuilder.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -9,7 +9,7 @@ import java.io.File;
 import org.housered.jstestrunner.tests.SimpleHtmlTestPage;
 import org.housered.jstestrunner.tests.TestPage;
 import org.housered.jstestrunner.tests.TestResult;
-import org.housered.jstestrunner.tests.TestResult.TestCaseResult;
+import org.housered.jstestrunner.tests.TestSuiteResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -42,10 +42,12 @@ public class QUnitHtmlTestRunnerTest
     @Test
     public void shouldParseTestResults() throws Exception
     {
-        TestResult expectedResult = testResult("Test Title", 28)
-                                                .withTestCase(new TestCaseResult("testClass", "test", true, 0))
-                                                .withTestCase(new TestCaseResult("testClass", "test2", false, 0))
-                                                .withTestCase(new TestCaseResult("testClass2", "final-test", true, 0))
+        TestSuiteResult expectedResult = testSuiteResult("Test Title", 54)
+                                                .withTestSuite(testSuiteResult("Test module", 0)
+                                                                .withTestCase(new TestResult("test", 0, true))
+                                                                .withTestCase(new TestResult("test2", 0, true)))
+                                                .withTestSuite(testSuiteResult("Another module", 0)
+                                                                .withTestCase(new TestResult("final-test", 0, true)))
                                                 .build();
         
         HtmlPage resultsPage = asMockQUnitPage(expectedResult);
@@ -57,11 +59,12 @@ public class QUnitHtmlTestRunnerTest
     }
     
     @Test
-    public void shouldParseTestResultsWithoutClasses() throws Exception {
-        TestResult expectedResult = testResult("Test Title", 28)
-                .withTestCase(new TestCaseResult(null, "test", true, 0))
-                .withTestCase(new TestCaseResult("testClass", "test2", false, 0))
-                .build();
+    public void shouldParseTestResultsWithoutModules() throws Exception {
+        TestSuiteResult expectedResult = testSuiteResult("Test Title", 28)
+                                            .withTestCase(new TestResult("test", 0, true))
+                                            .withTestSuite(testSuiteResult("Test Module", 0)
+                                                    .withTestCase(new TestResult("test2", 0, false)))
+                                            .build();
         
         HtmlPage resultsPage = asMockQUnitPage(expectedResult);
         when(browser.getPage(testPage.getFileURL())).thenReturn(resultsPage);

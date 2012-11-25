@@ -1,14 +1,12 @@
 package org.housered.jstestrunner.output;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
-import org.housered.jstestrunner.tests.TestResult;
+import org.housered.jstestrunner.tests.TestSuiteResult;
 
 public interface TestResultOutputter
 {
-
-    void writeTestResultToFile(TestResult result) throws IOException;
+    void writeTestSuiteToFile(TestSuiteResult result) throws IOException;
 
 	void finishTestOutput() throws IOException;
     

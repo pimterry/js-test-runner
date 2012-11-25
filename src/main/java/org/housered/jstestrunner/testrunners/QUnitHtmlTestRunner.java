@@ -1,13 +1,15 @@
 package org.housered.jstestrunner.testrunners;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.housered.jstestrunner.tests.TestPage;
 import org.housered.jstestrunner.tests.TestResult;
-import org.housered.jstestrunner.tests.TestResult.TestCaseResult;
+import org.housered.jstestrunner.tests.TestSuiteResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,7 +46,7 @@ public class QUnitHtmlTestRunner implements TestRunner
         this.browser = browser;
     }
 
-    public TestResult runTest(TestPage test) throws UnableToRunTestException
+    public TestSuiteResult runTest(TestPage test) throws UnableToRunTestException
     {
         HtmlPage page;
 
@@ -63,7 +65,7 @@ public class QUnitHtmlTestRunner implements TestRunner
     }
 
     @SuppressWarnings("unchecked")
-    private TestResult getTestResultFrom(HtmlPage resultsPage)
+    private TestSuiteResult getTestResultFrom(HtmlPage resultsPage)
     {
         String testName = getTestNameFromTestPage(resultsPage);    	
     	
@@ -73,14 +75,34 @@ public class QUnitHtmlTestRunner implements TestRunner
         int failedTests = getFailedTestsFromResultsNode(results);
         int totalTime = getTotalTimeTakenFromResultsNode(results);
 
-        List<TestCaseResult> testCaseResults = new ArrayList<TestCaseResult>();
+        List<TestResult> modules = getModulesFromTestCaseElements((List<DomElement>) results.getByXPath(TEST_CASE_XPATH));
 
-        for (DomElement testCaseElement : (List<DomElement>) results.getByXPath(TEST_CASE_XPATH))
+        return new TestSuiteResult(testName, totalTime, totalTests, failedTests, 0, 0, modules);
+    }
+    
+    private List<TestResult> getModulesFromTestCaseElements(List<DomElement> testCaseElements) {        
+        Map<String, List<TestResult>> resultsBySuiteName = new LinkedHashMap<String, List<TestResult>>();        
+
+        for (DomElement testCaseElement : testCaseElements)
         {
-            testCaseResults.add(getTestCaseResultsFromNode(testCaseElement));
+            String moduleName = getTestModuleFromTestCaseNode(testCaseElement);
+            if (!resultsBySuiteName.containsKey(moduleName)) {
+                resultsBySuiteName.put(moduleName, new ArrayList<TestResult>());
+            }
+            resultsBySuiteName.get(moduleName).add(getTestCaseResultsFromTestCaseNode(testCaseElement));
         }
-
-        return new TestResult(totalTests, failedTests, 0, 0, totalTime, testName, testCaseResults);
+        
+        List<TestResult> modules = new ArrayList<TestResult>();
+        
+        for (String moduleName : resultsBySuiteName.keySet()) {
+            if (moduleName == null) {
+                modules.addAll(resultsBySuiteName.get(moduleName));
+            } else {
+                modules.add(TestSuiteResult.newSuiteFromResultsList(moduleName, resultsBySuiteName.get(moduleName)));
+            }
+        }
+        
+        return modules;
     }
 
     private String getTestNameFromTestPage(HtmlPage resultsPage) {
@@ -109,23 +131,26 @@ public class QUnitHtmlTestRunner implements TestRunner
             return 0;
         }
     }
-
-    private TestCaseResult getTestCaseResultsFromNode(DomElement testCase)
-    {
-        boolean success = testCase.getAttribute("class").contains("pass");
-        
+    
+    private String getTestModuleFromTestCaseNode(DomElement testCase) {
         DomElement testClassElement = testCase.getFirstByXPath(TEST_CASE_CLASS_XPATH);
         String testClass = null;
         if (testClassElement != null) {
             testClass = testClassElement.getTextContent();
         }
+        return testClass;
+    }
+
+    private TestResult getTestCaseResultsFromTestCaseNode(DomElement testCase)
+    {
+        boolean success = testCase.getAttribute("class").contains("pass");
         
         DomElement testNameElement = testCase.getFirstByXPath(TEST_CASE_NAME_XPATH);
         String testName = testNameElement.getTextContent();
         
         int testDurationMillis = 0; // Not available from QUnit
         
-        return new TestCaseResult(testClass, testName, success, testDurationMillis);
+        return new TestResult(testName, testDurationMillis, success);
     }
 
     private void waitUntilResultsAreReadyOn(HtmlPage resultsPage)

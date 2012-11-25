@@ -11,7 +11,7 @@ import org.housered.jstestrunner.testrunners.TestRunnerFactory;
 import org.housered.jstestrunner.testrunners.UnableToRunTestException;
 import org.housered.jstestrunner.tests.TestPage;
 import org.housered.jstestrunner.tests.TestPageFactory;
-import org.housered.jstestrunner.tests.TestResult;
+import org.housered.jstestrunner.tests.TestSuiteResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,9 +89,9 @@ public class CommandLineTool {
 		
 		for (TestPage test : testPages) {
 			TestRunner testRunner = testRunnerFactory.getRunnerForTestPage(test);
-			TestResult result = testRunner.runTest(test);
+			TestSuiteResult result = testRunner.runTest(test);
 	
-			testOutputter.writeTestResultToFile(result);
+			testOutputter.writeTestSuiteToFile(result);
 		}
 	}
 
