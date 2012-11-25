@@ -22,21 +22,15 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 public class QUnitHtmlTestRunnerTest
 {
 
-    @Mock
-    private WebClient browser;
-
     private TestPage testPage;
-
-    @InjectMocks
-    private QUnitHtmlTestRunner testRunner;
+    @Mock WebClient browser;
+    @InjectMocks QUnitHtmlTestRunner testRunner;
 
     @Before
     public void setup() throws Exception
     {
         MockitoAnnotations.initMocks(this);
-
         this.testPage = new SimpleHtmlTestPage(new File("test-page-path"));
-        
     }
 
     @Test

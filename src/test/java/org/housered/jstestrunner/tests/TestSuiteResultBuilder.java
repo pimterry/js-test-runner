@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
@@ -50,6 +51,7 @@ public class TestSuiteResultBuilder {
     
     public static HtmlPage asMockQUnitPage(TestSuiteResult testResult) {
         HtmlPage resultsPage = mock(HtmlPage.class);
+        when(resultsPage.getWebClient()).thenReturn(mock(WebClient.class));
         
         List<DomElement> testResultElements = new ArrayList<DomElement>();
         
@@ -80,7 +82,7 @@ public class TestSuiteResultBuilder {
         int passedTests = totalTests - failedTests;
         
         when(resultsElement.getTextContent()).thenReturn(
-                "Tests completed in " + testResult.getTestDurationMillis() + " milliseconds.\n" + 
+                "Tests completed in " + testResult.getTestDurationMillis() + " milliseconds.\n" +
                 passedTests + " tests of " + totalTests + " passed, " + failedTests + " failed.");
         
         DomElement totalNode = mock(DomElement.class);
@@ -89,7 +91,7 @@ public class TestSuiteResultBuilder {
 
         DomElement failedNode = mock(DomElement.class);
         when(resultsElement.getFirstByXPath(contains("failed"))).thenReturn(failedNode);
-        when(failedNode.getTextContent()).thenReturn(String.valueOf(failedTests));        
+        when(failedNode.getTextContent()).thenReturn(String.valueOf(failedTests));
         
         return resultsPage;
     }
