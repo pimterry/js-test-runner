@@ -56,4 +56,19 @@ public class QUnitHtmlTestRunnerTest
         assertEquals(expectedResult, actualResult);
     }
     
+    @Test
+    public void shouldParseTestResultsWithoutClasses() throws Exception {
+        TestResult expectedResult = testResult("Test Title", 28)
+                .withTestCase(new TestCaseResult(null, "test", true, 0))
+                .withTestCase(new TestCaseResult("testClass", "test2", false, 0))
+                .build();
+        
+        HtmlPage resultsPage = asMockQUnitPage(expectedResult);
+        when(browser.getPage(testPage.getFileURL())).thenReturn(resultsPage);
+
+        TestResult actualResult = testRunner.runTest(testPage);
+
+        assertEquals(expectedResult, actualResult);
+    }
+    
 }

@@ -115,7 +115,10 @@ public class QUnitHtmlTestRunner implements TestRunner
         boolean success = testCase.getAttribute("class").contains("pass");
         
         DomElement testClassElement = testCase.getFirstByXPath(TEST_CASE_CLASS_XPATH);
-        String testClass = testClassElement.getTextContent();
+        String testClass = null;
+        if (testClassElement != null) {
+            testClass = testClassElement.getTextContent();
+        }
         
         DomElement testNameElement = testCase.getFirstByXPath(TEST_CASE_NAME_XPATH);
         String testName = testNameElement.getTextContent();

@@ -37,7 +37,9 @@ public class JUnitTestResultOutputter implements TestResultOutputter {
 
 		for (TestCaseResult testCaseResult : result.getTestResults()) {
 			Element testCase = new Element("testcase");
-			testCase.setAttribute("classname", testCaseResult.getTestClass());
+			if (testCaseResult.getTestClass() != null) {
+			    testCase.setAttribute("classname", testCaseResult.getTestClass());
+			}
 			testCase.setAttribute("name", testCaseResult.getTestName());
 
 			double testTime = testCaseResult.getTestDurationMillis() / 1000d;

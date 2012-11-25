@@ -80,9 +80,11 @@ public class TestResultBuilder {
         if (result.wasSuccess()) when(testCase.getAttribute("class")).thenReturn("pass");
         else when(testCase.getAttribute("class")).thenReturn("fail");
 
-        DomElement testClassElement = mock(DomElement.class);
-        when(testClassElement.getTextContent()).thenReturn(result.getTestClass());
-        when(testCase.getFirstByXPath(contains("module-name"))).thenReturn(testClassElement);
+        if (result.getTestClass() != null) {
+            DomElement testClassElement = mock(DomElement.class);
+            when(testClassElement.getTextContent()).thenReturn(result.getTestClass());
+            when(testCase.getFirstByXPath(contains("module-name"))).thenReturn(testClassElement);
+        }
 
         DomElement testNameElement = mock(DomElement.class);
         when(testNameElement.getTextContent()).thenReturn(result.getTestName());
