@@ -3,6 +3,9 @@ package org.housered.jstestrunner.tests;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 public class TestResult
 {
 
@@ -64,49 +67,12 @@ public class TestResult
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + errors;
-        result = prime * result + failures;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + skipped;
-        result = prime * result + ((testResults == null) ? 0 : testResults.hashCode());
-        result = prime * result + tests;
-        result = prime * result + totalTime;
-        return result;
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        
-        TestResult other = (TestResult) obj;
-        
-        if (errors != other.errors) return false;        
-        if (failures != other.failures) return false;
-        
-        if (name == null) {
-            if (other.name != null) return false;
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
-    
-        if (skipped != other.skipped) {
-            return false;
-        }
-        
-        if (testResults == null) {
-            if (other.testResults != null) return false;
-        } else if (!testResults.equals(other.testResults)) {
-            return false;
-        }
-        
-        if (tests != other.tests) return false;        
-        if (totalTime != other.totalTime) return false;
-        
-        return true;
+        return EqualsBuilder.reflectionEquals(this, obj);
     }
     
     public static class TestCaseResult
@@ -147,44 +113,13 @@ public class TestResult
 
         @Override
         public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + (success ? 1231 : 1237);
-            result = prime * result + ((testClass == null) ? 0 : testClass.hashCode());
-            result = prime * result + testDurationMillis;
-            result = prime * result + ((testName == null) ? 0 : testName.hashCode());
-            return result;
+            return HashCodeBuilder.reflectionHashCode(this);
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null) return false;
-            if (getClass() != obj.getClass()) return false;
-            
-            TestCaseResult other = (TestCaseResult) obj;
-            if (success != other.success) return false;
-            
-            if (testClass == null) {
-                if (other.testClass != null) return false;
-            } else if (!testClass.equals(other.testClass)) {
-                return false;
-            }
-            
-            if (testDurationMillis != other.testDurationMillis) {
-                return false;
-            }
-            
-            if (testName == null) {
-                if (other.testName != null) return false;
-            } else if (!testName.equals(other.testName)) {
-                return false;
-            }
-            
-            return true;
+            return EqualsBuilder.reflectionEquals(this, obj);
         }
-        
-        
 
     }
 
