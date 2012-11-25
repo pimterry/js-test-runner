@@ -153,31 +153,30 @@ public class QUnitHtmlTestRunner implements TestRunner
         return new TestResult(testName, testDurationMillis, success);
     }
 
-    private void waitUntilResultsAreReadyOn(HtmlPage resultsPage)
-    {
+    private void waitUntilResultsAreReadyOn(HtmlPage resultsPage) {
         DomElement resultsNode = resultsPage.getFirstByXPath(RESULTS_SUMMARY_XPATH);
         ElementListenerAndNotifier resultsListener = new ElementListenerAndNotifier();
 
-        synchronized (resultsListener)
-        {
+        synchronized (resultsListener) {
             resultsNode.addDomChangeListener(resultsListener);
 
-            while (!resultsReady(resultsNode))
-            {
-                try
-                {
+            while (!resultsReady(resultsPage)) {
+                try {
                     resultsListener.wait();
-                }
-                catch (InterruptedException e)
-                {
+                } catch (InterruptedException e) {
                 }
             }
         }
     }
 
-    private boolean resultsReady(DomNode resultsNode)
+    private boolean resultsReady(HtmlPage resultsPage)
     {
-        return resultsNode.getTextContent().contains("Tests completed");
+        DomElement resultsNode = resultsPage.getFirstByXPath(RESULTS_SUMMARY_XPATH);
+        
+        boolean qunitThinksItsDone = resultsNode.getTextContent().contains("Tests completed");
+        boolean noBackgroundTasks = resultsPage.getWebClient().waitForBackgroundJavaScript(0) == 0;
+        
+        return qunitThinksItsDone && noBackgroundTasks;
     }
 
     private class ElementListenerAndNotifier implements DomChangeListener
