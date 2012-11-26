@@ -13,6 +13,7 @@ import org.housered.jstestrunner.tests.TestSuiteResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.gargoylesoftware.htmlunit.IncorrectnessListener;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomChangeEvent;
 import com.gargoylesoftware.htmlunit.html.DomChangeListener;
@@ -21,8 +22,7 @@ import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 @Component
-public class QUnitHtmlTestRunner implements TestRunner
-{
+public class QUnitHtmlTestRunner implements TestRunner {
 
     private WebClient browser;
 
@@ -41,32 +41,30 @@ public class QUnitHtmlTestRunner implements TestRunner
     private static final Pattern TOTAL_TEST_TIME_REGEX = Pattern.compile("Tests completed in (\\d+) milliseconds");
 
     @Autowired
-    public QUnitHtmlTestRunner(WebClient browser)
-    {
+    public QUnitHtmlTestRunner(WebClient browser) {
         this.browser = browser;
+        browser.setIncorrectnessListener(new IncorrectnessListener() {
+            public void notify(String message, Object origin) {
+            }
+        });
     }
 
     public TestSuiteResult runTest(TestPage test) throws UnableToRunTestException
     {
         HtmlPage page;
 
-        try
-        {
+        try {
             page = browser.getPage(test.getFileURL());
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new UnableToRunTestException(e);
         }
 
         waitUntilResultsAreReadyOn(page);
-
         return getTestResultFrom(page);
     }
 
     @SuppressWarnings("unchecked")
-    private TestSuiteResult getTestResultFrom(HtmlPage resultsPage)
-    {
+    private TestSuiteResult getTestResultFrom(HtmlPage resultsPage) {
         String testName = getTestNameFromTestPage(resultsPage);    	
     	
         DomElement results = resultsPage.getFirstByXPath(RESULTS_SUMMARY_XPATH);
@@ -110,14 +108,12 @@ public class QUnitHtmlTestRunner implements TestRunner
 		return titleElement.getTextContent();
 	}
 
-	private int getTotalTestsFromResultsNode(DomElement resultsNode)
-    {
+	private int getTotalTestsFromResultsNode(DomElement resultsNode) {
         DomElement node = resultsNode.getFirstByXPath(TOTAL_TEST_COUNT_XPATH);
         return Integer.parseInt(node.getTextContent());
     }
 
-    private int getFailedTestsFromResultsNode(DomElement resultsNode)
-    {
+    private int getFailedTestsFromResultsNode(DomElement resultsNode) {
         DomElement node = resultsNode.getFirstByXPath(FAILED_TEST_COUNT_XPATH);
         return Integer.parseInt(node.getTextContent());
     }
@@ -141,8 +137,7 @@ public class QUnitHtmlTestRunner implements TestRunner
         return testClass;
     }
 
-    private TestResult getTestCaseResultsFromTestCaseNode(DomElement testCase)
-    {
+    private TestResult getTestCaseResultsFromTestCaseNode(DomElement testCase) {
         boolean success = testCase.getAttribute("class").contains("pass");
         
         DomElement testNameElement = testCase.getFirstByXPath(TEST_CASE_NAME_XPATH);
@@ -169,8 +164,7 @@ public class QUnitHtmlTestRunner implements TestRunner
         }
     }
 
-    private boolean resultsReady(HtmlPage resultsPage)
-    {
+    private boolean resultsReady(HtmlPage resultsPage) {
         DomElement resultsNode = resultsPage.getFirstByXPath(RESULTS_SUMMARY_XPATH);
         
         boolean qunitThinksItsDone = resultsNode.getTextContent().contains("Tests completed");
@@ -179,19 +173,15 @@ public class QUnitHtmlTestRunner implements TestRunner
         return qunitThinksItsDone && noBackgroundTasks;
     }
 
-    private class ElementListenerAndNotifier implements DomChangeListener
-    {
+    private class ElementListenerAndNotifier implements DomChangeListener {
         private static final long serialVersionUID = 5876321513155410935L;
 
-        public synchronized void nodeAdded(DomChangeEvent event)
-        {
+        public synchronized void nodeAdded(DomChangeEvent event) {
             this.notifyAll();
         }
 
-        public void nodeDeleted(DomChangeEvent event)
-        {
+        public void nodeDeleted(DomChangeEvent event) {
         }
-
     }
 
 }
