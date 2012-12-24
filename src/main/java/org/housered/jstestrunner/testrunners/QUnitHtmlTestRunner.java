@@ -18,7 +18,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomChangeEvent;
 import com.gargoylesoftware.htmlunit.html.DomChangeListener;
 import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 @Component
@@ -49,8 +48,7 @@ public class QUnitHtmlTestRunner implements TestRunner {
         });
     }
 
-    public TestSuiteResult runTest(TestPage test) throws UnableToRunTestException
-    {
+    public TestSuiteResult runTest(TestPage test) throws UnableToRunTestException {
         HtmlPage page;
 
         try {
@@ -157,7 +155,7 @@ public class QUnitHtmlTestRunner implements TestRunner {
 
             while (!resultsReady(resultsPage)) {
                 try {
-                    resultsListener.wait();
+                    resultsListener.wait(1000);
                 } catch (InterruptedException e) {
                 }
             }

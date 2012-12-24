@@ -3,6 +3,7 @@ package org.housered.jstestrunner.io;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.tika.Tika;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 public class TestFileTypeDetector {
     
     private static final String HTML_MIME_TYPE = "text/html";
+	private static final String QUNIT_CONTENT_MARKER = "qunit.js";
     private Tika tika;
 
     public TestFileTypeDetector() {
@@ -26,7 +28,11 @@ public class TestFileTypeDetector {
 		String testFileType = tika.detect(file);
 		
 		if (testFileType.equals(HTML_MIME_TYPE)) {
-		    return TestFileType.QUNIT;
+			String fileContent = FileUtils.readFileToString(file);
+			if (fileContent.contains(QUNIT_CONTENT_MARKER)) {
+				return TestFileType.QUNIT;
+			}
+		    return TestFileType.UNKNOWN;
 		} else {
 		    return TestFileType.UNKNOWN;
 		}
