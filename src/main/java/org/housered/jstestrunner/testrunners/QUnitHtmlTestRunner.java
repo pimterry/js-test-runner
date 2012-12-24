@@ -147,6 +147,9 @@ public class QUnitHtmlTestRunner implements TestRunner {
     }
 
     private void waitUntilResultsAreReadyOn(HtmlPage resultsPage) {
+    	// Before checking for completion, wait up to 60 seconds for JavaScript to complete 
+    	resultsPage.getWebClient().waitForBackgroundJavaScript(60000);
+    	
         DomElement resultsNode = resultsPage.getFirstByXPath(RESULTS_SUMMARY_XPATH);
         ElementListenerAndNotifier resultsListener = new ElementListenerAndNotifier();
 
