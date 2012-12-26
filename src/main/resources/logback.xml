@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+  <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{yyyy-MM-d HH:mm:ss} %5p | %m %n%ex{-1}</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="file" class="ch.qos.logback.core.FileAppender">
+    <file>js-test-runner.log</file>
+    <append>false</append>
     <encoder>
       <pattern>%d %5p | %t | %-55logger{55} | %m %n</pattern>
     </encoder>
@@ -11,7 +19,8 @@
   </logger>
 
   <root>
-    <level value="WARN" />
-    <appender-ref ref="CONSOLE" />
+    <level value="INFO" />
+    <appender-ref ref="console" />
+    <!-- <appender-ref ref="file" /> -->
   </root>
 </configuration>

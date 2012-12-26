@@ -17,9 +17,9 @@ import org.jdom2.input.SAXBuilder;
 
 import cucumber.annotation.en.Then;
 
-public class RealQUnitTestSuites {
+public class TestResultSteps {
     
-    @Then("'(.+)' should describe the .+ tests passing")
+    @Then("'(.+)' should describe the .+ tests?(?: passing)?")
     public void allTestsShouldPass(String outputFile) throws Exception {
         SAXBuilder sax = new SAXBuilder();
         Document outputDoc = sax.build(new File(outputFile));
@@ -31,6 +31,23 @@ public class RealQUnitTestSuites {
         
         assertTestSuiteElementIsCompleteAndPassing(root);
     }
+    
+    @Then("'(.*)' should describe (\\d+) test suites?(?: passing)?")
+	public void shouldContainTestResults(String outputFile, int expectedSuiteCount) 
+			throws Exception {
+        Element root = new SAXBuilder().build(new File(outputFile)).getRootElement();
+        
+        if (expectedSuiteCount == 1) {
+        	assertTestSuiteElementIsCompleteAndPassing(root);
+        } else {
+	        assertEquals("testsuites", root.getName());
+	        assertEquals(expectedSuiteCount, root.getChildren().size());
+	        
+	        for (Element suiteElement : root.getChildren()) {
+	        	assertTestSuiteElementIsCompleteAndPassing(suiteElement);
+	        }
+        }
+	}
 
     private void assertTestSuiteElementIsCompleteAndPassing(Element element) throws DataConversionException {
         assertFalse(element.getAttribute("name").getValue().isEmpty());        

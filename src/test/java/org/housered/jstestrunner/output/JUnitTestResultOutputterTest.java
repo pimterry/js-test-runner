@@ -1,8 +1,7 @@
 package org.housered.jstestrunner.output;
 
-import static java.util.Collections.*;
-import static org.housered.jstestrunner.tests.TestSuiteResultBuilder.*;
-import static org.junit.Assert.*;
+import static org.housered.jstestrunner.tests.TestSuiteResultBuilder.testSuiteResult;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,6 +33,15 @@ public class JUnitTestResultOutputterTest
     public void setup() {
         outputStream = new ByteArrayOutputStream();
         outputter = new JUnitTestResultOutputter(outputStream);
+    }
+    
+    @Test
+    public void shouldWriteEmptyTestSuitesOutputIfNoTests() throws Exception {
+    	outputter.finishTestOutput();
+    	
+    	Element outputRoot = getElementFromOutput();
+    	assertEquals("testsuites", outputRoot.getName());
+    	assertEquals(0, outputRoot.getChildren().size());
     }
 
     @Test

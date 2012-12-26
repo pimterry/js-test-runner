@@ -50,7 +50,7 @@ public class CommandLineTool {
 		jCommander.parse(args);
 
 		if (tests.isEmpty()) {
-			LOG.error("No tests specified");
+			LOG.warn("No tests specified");
 			jCommander.usage();
 			return;
 		}
@@ -86,6 +86,10 @@ public class CommandLineTool {
 
 	private void runTest(String testName, TestResultOutputter testOutputter) throws IOException, UnableToRunTestException {
 		List<TestPage> testPages = testPageFactory.getTestPages(testName);
+		
+		if (testPages.isEmpty()) {
+			LOG.warn("No tests were found for test {}", testName);
+		}
 		
 		for (TestPage test : testPages) {
 			TestRunner testRunner = testRunnerFactory.getRunnerForTestPage(test);

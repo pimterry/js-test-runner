@@ -83,7 +83,8 @@ public class JUnitTestResultOutputter implements TestResultOutputter {
 		} else if (testSuiteElements.size() == 1) {
 			xmlOutputter.output(new Document(testSuiteElements.get(0)), outputStream);
 		} else {
-			return;
+			Document noSuitesDoc = new Document(new Element("testsuites"));
+			xmlOutputter.output(noSuitesDoc, outputStream);
 		}
 	}	
 
