@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hamcrest.Matcher;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +40,7 @@ public class ConsoleOutputSteps {
 	
 	private List<ILoggingEvent> logEvents() {
 		ArgumentCaptor<ILoggingEvent> eventCaptor = ArgumentCaptor.forClass(ILoggingEvent.class);		
-		verify(mockAppender, atLeastOnce()).doAppend(eventCaptor.capture());		
+		verify(mockAppender, atLeastOnce()).doAppend(eventCaptor.capture());
 		return eventCaptor.getAllValues();
 	}
 	
@@ -60,7 +61,8 @@ public class ConsoleOutputSteps {
 
 	@Then("the console output should contain '(.*)'")
 	public void consoleOutputShouldContain(String expectedOutput) {
-		assertThat(logMessagesOfAtLeastLevel(INFO), hasItem(containsString(expectedOutput)));
+	    Matcher<Iterable<? super String>> matcher = hasItem(containsString(expectedOutput));
+		assertThat(logMessagesOfAtLeastLevel(INFO), matcher);
 	}
 	
 }
