@@ -11,7 +11,7 @@ scripts than tests (somewhat tongue-in-cheek: there are arguments for this), you
 Input support:
 --------------
 
-Js-Test-Runner fully supports only [QUnit](http://qunitjs.com/) HTML tests currently. This is expected to expand to include [Jasmine](http://pivotal.github.com/jasmine/) tests  
+Js-Test-Runner fully supports only [QUnit](http://qunitjs.com/) HTML tests currently. This is expected to expand to include [Jasmine](https://jasmine.github.io/) tests  
 too in the medium/short-term (issue [#7](https://github.com/pimterry/js-test-runner/issues/7)).
 
 Output support:
